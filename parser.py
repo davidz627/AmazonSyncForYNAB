@@ -17,7 +17,7 @@ def parseInvoicePage(page_source):
         print(f"Before tax value is less than or equal to 0, was {items} free?")
         return None, None
     taxPercent = tax/beforeTax
-    afterTaxItems = [(i[0], round(i[1]*(1+taxPercent), 2)) for i in items]
+    afterTaxItems = [(i[0], int(100*round(i[1]*(1+taxPercent), 2))) for i in items]
 
     #Then get "Credit Card Transactions"
     transactions = None
@@ -28,6 +28,6 @@ def parseInvoicePage(page_source):
 
     transactionsContainer = ccTransactions.parent.parent.parent.parent
     transactions = transactionsContainer.findAll(text=re.compile(r"\$\d+"))
-    transactions = [float(t.strip()[1:]) for t in transactions]
+    transactions = [int(float(t.strip()[1:])*100) for t in transactions]
 
     return afterTaxItems, transactions

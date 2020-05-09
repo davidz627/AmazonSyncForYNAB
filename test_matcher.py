@@ -19,20 +19,29 @@ def testMatchItems():
 def testMatchAmazonToYNAB():
     tests = {
         "works": {
-            "amazonT":{503: ["blob"], 103: ["oboe"]},
+            "amazonT":[{503: ["blob"], 103: ["oboe"]}],
             "ynabT": [{"id": 123, "memo": "foo", "amount":-503},{"id": 321, "amount":-103}],
             "expPatch": [{"id": 321, "memo": "oboe"}, {"id": 123, "memo": "blob"}],
-        }
+        },
+        "works multiple transactions": {
+            "amazonT":[{503: ["blob"]}, {103: ["oboe"]}],
+            "ynabT": [{"id": 123, "memo": "foo", "amount":-503},{"id": 321, "amount":-103}],
+            "expPatch": [{"id": 321, "memo": "oboe"}, {"id": 123, "memo": "blob"}],
+        },
+        "notAllInYNAB":{
+            "amazonT":[{503: ["blob"], 103: ["oboe"]}],
+            "ynabT": [{"id": 321, "amount":-103}],
+            "expPatch": [{"id": 321, "memo": "oboe"}],
+        },
+        "notAllInAmazon":
+            {
+            "amazonT":[{503: ["blob"]}],
+            "ynabT": [{"id": 123, "memo": "foo", "amount":-503},{"id": 321, "amount":-103}],
+            "expPatch": [{"id": 123, "memo": "blob"}],
+        },
     }
 
     for testName, tc in tests.items():
         print(f"running test {testName}")
         patch = matchAmazonToYNAB(tc["amazonT"], tc["ynabT"])
         assert equalsEnough(patch, tc["expPatch"]) == True
-
-testMatchAmazonToYNAB()
-'''
-    amazonT: [ccTransactionInCents: [purchasedItems]]
-    ynabT: [{"id": transactionID, "memo": existingMemo, "amount": -amtInCents, ...}]
-
-    return: [{"id": transactionID}, "memo": purchasedItems]'''

@@ -26,19 +26,23 @@ def main():
     myDriver = webdriver.Chrome()
     amazon_nav.signIn(myDriver, userEmail, userPassword, otpSecret)
     orderIDs = amazon_nav.getAllOrderIDs(myDriver)
+    amazonT = []
     for orderID in orderIDs:
-        iPage = amazon_nav.getInvoicePage(myDriver, orderID)
-        afterTaxItems, transactions = parser.parseInvoicePage(iPage)
-        if afterTaxItems == None or transactions == None:
-            continue
-        matched = matcher.matchItems(afterTaxItems, transactions)
-        print(afterTaxItems, transactions, matched)
-
-def ynab():
+        try:
+            iPage = amazon_nav.getInvoicePage(myDriver, orderID)
+            afterTaxItems, transactions = parser.parseInvoicePage(iPage)
+            if afterTaxItems == None or transactions == None:
+                continue
+            matched = matcher.matchItems(afterTaxItems, transactions)
+            amazonT.append(matched)
+            print(afterTaxItems, transactions, matched)
+        except Exception as e:
+            print(f"Something went wrong processing order {orderID}: {e}")
     myYNAB = YNAB(ynabToken, ynabBudgetID)
-    myYNAB.list_recent_amazon_transactions()
-    
+    ynabT = myYNAB.list_recent_amazon_transactions()
+    transactions = matcher.matchAmazonToYNAB(amazonT, ynabT)
+    myYNAB.patch_transactions(transactions)
 
 if __name__ == "__main__":
-    #main()
-    ynab()
+    main()
+    #ynab()
