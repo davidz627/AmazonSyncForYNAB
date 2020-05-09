@@ -9,6 +9,7 @@ import configparser
 import parser
 import amazon_nav
 import matcher
+from ynab_client import YNAB
 
 # Use encrypted secrets config
 
@@ -18,6 +19,8 @@ myConfig = config['DEFAULT']
 otpSecret = myConfig["otpSecret"]
 userEmail = myConfig["userEmail"]
 userPassword = myConfig["userPassword"]
+ynabToken = myConfig["ynabToken"]
+ynabBudgetID = myConfig["ynabBudgetID"]
 
 def main():
     myDriver = webdriver.Chrome()
@@ -31,6 +34,11 @@ def main():
         matched = matcher.matchItems(afterTaxItems, transactions)
         print(afterTaxItems, transactions, matched)
 
+def ynab():
+    myYNAB = YNAB(ynabToken, ynabBudgetID)
+    myYNAB.list_recent_amazon_transactions()
+    
 
 if __name__ == "__main__":
-    main()
+    #main()
+    ynab()

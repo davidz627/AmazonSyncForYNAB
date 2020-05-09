@@ -27,3 +27,20 @@ def getItemsCombination(afterTaxItems):
         prevCombinations[price+curItem[1]] = prevCombinations[price] + [curItem[0]]
         prevCombinations[curItem[1]] = [curItem[0]]
     return prevCombinations
+
+'''
+    amazonT: [ccTransactionInCents: [purchasedItems]]
+    ynabT: [{"id": transactionID, "memo": existingMemo, "amount": amtInCents, ...}]
+
+    return: [{"id": transactionID}, "memo": purchasedItems]
+'''
+def matchAmazonToYNAB(amazonT, ynabT):
+  patch = []
+  for t in ynabT:
+      amtInCents = -t["amount"]
+      if amtInCents in amazonT:
+          # We have a match!
+          patch.append({"id": t["id"], "memo":",".join(amazonT[amtInCents])})
+      else:
+          print (f"Transaction of amt {amtInCents} not matched to any amazon order")
+  return patch

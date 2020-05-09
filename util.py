@@ -1,11 +1,29 @@
+import copy
 
 def equalsEnough(a, b):
-    if type(a) == dict:
+    a, b = copy.copy(a), copy.copy(b)
+    if type(a) != type(b):
+        return False
+    elif type(a) == dict:
         if len(a) != len(b):
             return False
         for k, v in a.items():
-            if b[k] != v:
+            if not equalsEnough(b[k], v):
                 return False
         return True
-    if type(a) == list:
-        return sorted(a) == sorted(b)
+    elif type(a) == list:
+        if len(a) != len(b):
+            return False
+        for i in range(len(a)-1, -1, -1):
+            matched = False
+            for j in range(len(b)-1, -1, -1):
+                if equalsEnough(a[i], b[j]):
+                    del a[i]
+                    del b[j]
+                    matched = True
+                    break
+            if not matched:
+                return False
+        return True
+    else:
+        return a == b
