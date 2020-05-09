@@ -3,12 +3,18 @@ import pyotp
 import re
 from bs4 import BeautifulSoup
 import time
+import copy
+import configparser
 
 # Use encrypted secrets config
+
+config = configparser.ConfigParser()
+config.read("secrets/credentials.ini")
+myConfig = config['DEFAULT']
 orderPage = "https://www.amazon.com/gp/css/summary/print.html/ref=ppx_yo_dt_b_invoice_o00?ie=UTF8&orderID={}"
-otpSecret = "TODO"
-userEmail = "TODO"
-userPassword = "TODO"
+otpSecret = myConfig["otpSecret"]
+userEmail = myConfig["userEmail"]
+userPassword = myConfig["userPassword"]
 
 def getAllOrderIDs(driver):
     driver.get("https://www.amazon.com/gp/css/order-history")
@@ -60,7 +66,7 @@ def parseInvoicePage(page_source):
         print(f"Before tax value is less than or equal to 0, was {items} free?")
         return None, None
     taxPercent = tax/beforeTax
-    afterTaxItems = [(i[0], i[1]*(1+taxPercent)) for i in items]
+    afterTaxItems = [(i[0], round(i[1]*(1+taxPercent), 2)) for i in items]
 
     #Then get "Credit Card Transactions"
     transactions = None
@@ -75,18 +81,46 @@ def parseInvoicePage(page_source):
 
     return afterTaxItems, transactions
 
-#f = open("order.html", "r")
-#page = f.read()
-#afterTaxItems, transactions = parseInvoicePage(page)
-#print(afterTaxItems, transactions)
-#f.close()
+'''
+    afterTaxItems: [(itemName, afterTaxPrice)]
+    transactions: [creditCardTransaction]
+'''
+def matchItems(afterTaxItems, transactions):
+    # TODO: improve this algorithm and test for correctness
+    itemsPriceComboMap = getItemsCombination(afterTaxItems)
+    result = {}
+    # Round all items because floating point math
+    new = {}
+    for k, v in itemsPriceComboMap.items():
+        new[round(k, 2)] = v
+    for price in transactions:
+        result[price] = new[price]
+    return result
 
+# Amber contributed this nice algorithm which will break if 
+# there are different combinations that match the same transaction value
+# TODO: Fix this
+def getItemsCombination(afterTaxItems):
+    if len(afterTaxItems) == 1:
+        return {afterTaxItems[0][1]: [afterTaxItems[0][0]]}
+    prevCombinations = getItemsCombination(afterTaxItems[:-1])
+    curItem = afterTaxItems[-1]
+    prices = list(prevCombinations.keys())
+    for price in prices:
+        prevCombinations[price+curItem[1]] = prevCombinations[price] + [curItem[0]]
+        prevCombinations[curItem[1]] = [curItem[0]]
+    return prevCombinations
+
+# test()
 
 myDriver = webdriver.Chrome()
 signIn(myDriver)
 orderIDs = getAllOrderIDs(myDriver)
-#firstOrderID = "112-3232573-1284263"
+firstOrderID = "112-3232573-1284263"
 for orderID in orderIDs:
-    iPage = getInvoicePage(myDriver, orderID)
-    afterTaxItems, transactions = parseInvoicePage(iPage)
-    print(afterTaxItems, transactions)
+   iPage = getInvoicePage(myDriver, orderID)
+   afterTaxItems, transactions = parseInvoicePage(iPage)
+   if afterTaxItems == None or transactions == None:
+       continue
+   matched = matchItems(afterTaxItems, transactions)
+   print(afterTaxItems, transactions, matched)
