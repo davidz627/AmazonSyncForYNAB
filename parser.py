@@ -6,9 +6,10 @@ def parseInvoicePage(page_source):
     itemNames = pageSoup.find_all("i") # Dirty hack: names are the only thing in italics lmao
     items = []
     for item in itemNames:
+        numItems = int(item.parent.text.split()[0])
         itemName = item.text
         itemValue = float(item.parent.parent.findAll("td")[1].text.strip()[1:])
-        items.append((itemName, itemValue))
+        items.append((itemName, itemValue*numItems))
 
     beforeTax = float(pageSoup.find(text=re.compile(r"Total before tax")).parent.parent.findAll("td")[1].text.strip()[1:])
     tax= float(pageSoup.find(text=re.compile(r"Estimated tax to be collected")).parent.parent.findAll("td")[1].text.strip()[1:])
