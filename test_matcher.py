@@ -1,7 +1,7 @@
 from matcher import *
 
 # def testParseInvoicePage():
-#     f = open("exampleOrder.html", "r")
+#     f = open("tet/orders/simpleOrder.html", "r")
 #     page = f.read()
 #     afterTaxItems, transactions = parseInvoicePage(page)
 #     matched = matchItems(afterTaxItems, transactions)
