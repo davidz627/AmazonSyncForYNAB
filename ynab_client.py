@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+from datetime import date, timedelta
 
 class YNAB(object):
     BASE_URL = "https://api.youneedabudget.com/v1"
@@ -21,10 +22,10 @@ class YNAB(object):
         resp = json.loads(rawResponse.content.decode('utf-8'))
         return resp["data"]["budgets"][0]["id"]
 
-    # TODO: Make date range based on current date
     def list_recent_amazon_transactions(self):
-        #url = self.BASE_URL + "/budgets/6d515631-e0bc-43a2-bba6-a4242dfe307d/transactions?since_date=2020-04-03&type=uncategorized"
-        url = self.BASE_URL + f"/budgets/{self.budgetID}/transactions?since_date=2020-04-01"
+        todayDate = date.today() - timedelta(days=5)
+        priorDateStr = todayDate.strftime("%Y-%m-%d")
+        url = self.BASE_URL + f"/budgets/{self.budgetID}/transactions?since_date={priorDateStr}"
         headers = {
             "Authorization": f"Bearer {self.token}",
             "accept": "application/json",
