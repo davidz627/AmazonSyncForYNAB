@@ -2,16 +2,17 @@
     afterTaxItems: [(itemName, afterTaxPrice)]
     transactions: [creditCardTransaction]
 '''
+# TODO: improve this algorithm and test for correctness
 def matchAmazonTransactions(afterTaxItems, transactions):
-    # TODO: improve this algorithm and test for correctness
-    itemsPriceComboMap = getItemsCombination(afterTaxItems)
     result = {}
+    if len(transactions) == 1:
+        # Easy case we can hack some correctness into
+        result[transactions[0]] = list(map(lambda x: x[0], afterTaxItems))
+        return result
+    itemsPriceComboMap = getItemsCombination(afterTaxItems)
     # Round all items because floating point math
-    new = {}
-    for k, v in itemsPriceComboMap.items():
-        new[round(k, 2)] = v
     for price in transactions:
-        result[price] = new[price]
+        result[price] = itemsPriceComboMap[price]
     return result
 
 # Amber contributed this nice algorithm which will break if 

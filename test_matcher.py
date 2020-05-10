@@ -15,10 +15,16 @@ def testmatchAmazonTransactions():
             "transactions": [100],
             "expMatch": {100: ["a"]}
         },
+        "multipleItemsMatchSingleTransaction":{
+            "items": [("a", 200), ("b", 300)],
+            "transactions": [150],
+            "expMatch": {150: ["a", "b"]}
+        }
     }
     for testName, tc in tests.items():
         print (f"running test {testName}")
-        assert equalsEnough(matchAmazonTransactions(tc["items"], tc["transactions"]), tc["expMatch"])
+        gotMatch = matchAmazonTransactions(tc["items"], tc["transactions"])
+        assert equalsEnough(gotMatch, tc["expMatch"])
 
     # TODO: following is an example of a failure
     #same = [("a", 5), ("b", 5)]
@@ -55,3 +61,5 @@ def testMatchAmazonToYNAB():
         print(f"running test {testName}")
         patch = matchAmazonToYNAB(tc["amazonT"], tc["ynabT"])
         assert equalsEnough(patch, tc["expPatch"]) == True
+
+testmatchAmazonTransactions()
