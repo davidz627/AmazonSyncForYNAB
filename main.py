@@ -20,7 +20,6 @@ otpSecret = myConfig["otpSecret"]
 userEmail = myConfig["userEmail"]
 userPassword = myConfig["userPassword"]
 ynabToken = myConfig["ynabToken"]
-ynabBudgetID = myConfig["ynabBudgetID"]
 
 def main():
     myDriver = webdriver.Chrome()
@@ -38,11 +37,15 @@ def main():
             print(afterTaxItems, transactions, matched)
         except Exception as e:
             print(f"Something went wrong processing order {orderID}: {e}")
-    myYNAB = YNAB(ynabToken, ynabBudgetID)
+    myYNAB = YNAB(ynabToken)
     ynabT = myYNAB.list_recent_amazon_transactions()
     transactions = matcher.matchAmazonToYNAB(amazonT, ynabT)
     myYNAB.patch_transactions(transactions)
 
+def ynab():
+    myYNAB = YNAB(ynabToken)
+    myYNAB.getBudgetID()
+
 if __name__ == "__main__":
-    main()
-    #ynab()
+    #main()
+    ynab()

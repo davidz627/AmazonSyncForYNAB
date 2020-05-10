@@ -5,15 +5,26 @@ import re
 class YNAB(object):
     BASE_URL = "https://api.youneedabudget.com/v1"
 
-    def __init__(self, token, budgetID):
-        self.budgetID = budgetID
+    def __init__(self, token):
         self.token = token
+        self.budgetID = self.getBudgetID()
+
+    # TODO: Only gets the 0th budget available.
+    # We should eventually check all budgets just in case
+    def getBudgetID(self):
+        url = self.BASE_URL + "/budgets"
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "accept": "application/json",
+        }
+        rawResponse = requests.get(url ,headers=headers)
+        resp = json.loads(rawResponse.content.decode('utf-8'))
+        return resp["data"]["budgets"][0]["id"]
 
     # TODO: Make date range based on current date
-    # TODO: Make budget ID configurable
     def list_recent_amazon_transactions(self):
         #url = self.BASE_URL + "/budgets/6d515631-e0bc-43a2-bba6-a4242dfe307d/transactions?since_date=2020-04-03&type=uncategorized"
-        url = self.BASE_URL + "/budgets/6d515631-e0bc-43a2-bba6-a4242dfe307d/transactions?since_date=2020-04-01"
+        url = self.BASE_URL + f"/budgets/{self.budgetID}/transactions?since_date=2020-04-01"
         headers = {
             "Authorization": f"Bearer {self.token}",
             "accept": "application/json",
@@ -39,7 +50,7 @@ class YNAB(object):
         if len(transactions) == 0:
             print("No transactions to patch, skipping...")
             return
-        url = self.BASE_URL + "/budgets/6d515631-e0bc-43a2-bba6-a4242dfe307d/transactions"
+        url = self.BASE_URL + f"/budgets/{self.budgetID}/transactions"
         headers = {
             "Authorization": f"Bearer {self.token}",
             "accept": "application/json",
