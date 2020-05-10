@@ -3,17 +3,27 @@ from util import *
 import re
 
 # TODO: Fix up these tests.
-def testMatchItems():
-    a = [("a", 2), ("b", 6), ("c", 12.53), ("d", 1.12), ("e", 3.25), ("f", 8.23)]
-    q = round(2+12.53+8.23,2)
-    b = [1.12, 9.25, q]
-    # res = {9.25: {"e", "b"}, 1.12: {"d"}, q: {"a", "c", "f"}}
-    print(matchItems(a,b))
+def testmatchAmazonTransactions():
+    tests = {
+        "simple": {
+            "items": [("a", 200), ("b", 600), ("c", 1253), ("d", 112), ("e", 325), ("f", 823)],
+            "transactions": [112, 925, 2276],
+            "expMatch": {925: ["e", "b"], 112: ["d"], 2276: ["a", "c", "f"]}
+        },
+        "oneItemNoMatchCost": {
+            "items": [("a", 200)],
+            "transactions": [100],
+            "expMatch": {100: ["a"]}
+        },
+    }
+    for testName, tc in tests.items():
+        print (f"running test {testName}")
+        assert equalsEnough(matchAmazonTransactions(tc["items"], tc["transactions"]), tc["expMatch"])
 
     # TODO: following is an example of a failure
-    same = [("a", 5), ("b", 5)]
-    cc = [5, 5]
-    print(matchItems(same, cc))
+    #same = [("a", 5), ("b", 5)]
+    #cc = [5, 5]
+    #print(matchAmazonTransactions(same, cc))
 
 
 def testMatchAmazonToYNAB():

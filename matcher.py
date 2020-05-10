@@ -2,7 +2,7 @@
     afterTaxItems: [(itemName, afterTaxPrice)]
     transactions: [creditCardTransaction]
 '''
-def matchItems(afterTaxItems, transactions):
+def matchAmazonTransactions(afterTaxItems, transactions):
     # TODO: improve this algorithm and test for correctness
     itemsPriceComboMap = getItemsCombination(afterTaxItems)
     result = {}

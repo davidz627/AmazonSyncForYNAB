@@ -33,7 +33,7 @@ def main():
             afterTaxItems, transactions = parser.parseInvoicePage(iPage)
             if afterTaxItems == None or transactions == None:
                 continue
-            matched = matcher.matchItems(afterTaxItems, transactions)
+            matched = matcher.matchAmazonTransactions(afterTaxItems, transactions)
             amazonT.append(matched)
             print(afterTaxItems, transactions, matched)
         except Exception as e:
