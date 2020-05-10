@@ -1,5 +1,5 @@
 from selenium import webdriver
-
+from selenium.webdriver.chrome.options import Options
 import re
 import time
 import copy
@@ -22,7 +22,9 @@ userPassword = myConfig["userPassword"]
 ynabToken = myConfig["ynabToken"]
 
 def main():
-    myDriver = webdriver.Chrome()
+    options = Options()
+    options.add_argument('--headless')
+    myDriver = webdriver.Chrome(chrome_options=options)
     amazon_nav.signIn(myDriver, userEmail, userPassword, otpSecret)
     orderIDs = amazon_nav.getAllOrderIDs(myDriver)
     amazonT = []
@@ -42,10 +44,5 @@ def main():
     transactions = matcher.matchAmazonToYNAB(amazonT, ynabT)
     myYNAB.patch_transactions(transactions)
 
-def ynab():
-    myYNAB = YNAB(ynabToken)
-    myYNAB.getBudgetID()
-
 if __name__ == "__main__":
-    #main()
-    ynab()
+    main()
