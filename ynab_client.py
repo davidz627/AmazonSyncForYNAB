@@ -23,7 +23,7 @@ class YNAB(object):
         return resp["data"]["budgets"][0]["id"]
 
     def list_recent_amazon_transactions(self):
-        todayDate = date.today() - timedelta(days=5)
+        todayDate = date.today() - timedelta(days=3)
         priorDateStr = todayDate.strftime("%Y-%m-%d")
         url = self.BASE_URL + f"/budgets/{self.budgetID}/transactions?since_date={priorDateStr}"
         headers = {
