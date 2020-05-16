@@ -45,7 +45,12 @@ def matchAmazonToYNAB(amazonTransactions, ynabTransactions):
             # We have a match!
             # Truncate Items.
             truncatedTransactions = list(map(lambda x: " ".join(x.split()[:3]), at[amtInCents]))
-            patch.append({"id": yt["id"], "memo": "|".join(truncatedTransactions)})
+            # Only append to patch if memo != existing memo
+            memo = "|".join(truncatedTransactions)
+            if yt["memo"] == memo:
+                print(f"transaction {memo} already set, excluding from match")
+            else:
+                patch.append({"id": yt["id"], "memo": memo})
             matched = True
       if not matched:
           print (f"Transaction of amt {amtInCents} not matched to any amazon order")
