@@ -58,7 +58,6 @@ def testMatchAmazonToYNAB():
     }
 
     for testName, tc in tests.items():
-        print(f"running test {testName}")
         patch = matchAmazonToYNAB(tc["amazonT"], tc["ynabT"])
         assert equalsEnough(patch, tc["expPatch"]) == True
 
