@@ -1,14 +1,4 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-import re
-import time
-import copy
-import os
 import configparser
-import requests
-from bs4 import BeautifulSoup
-import pyotp
-import datetime
 
 # My packages
 import parser
@@ -48,5 +38,4 @@ def main():
 
 
 if __name__ == "__main__":
-    #amazon()
     main()

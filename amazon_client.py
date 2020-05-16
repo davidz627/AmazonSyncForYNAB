@@ -1,10 +1,5 @@
-import pyotp
 from bs4 import BeautifulSoup
-import time
 import requests
-
-# TODO: https://stackoverflow.com/questions/11892729/how-to-log-in-to-a-website-using-pythons-requests-module/17633072#17633072
-# maybe log in with this
 
 class Amazon(object):        
     ORDERS_PAGE = "https://www.amazon.com/gp/css/summary/print.html/ref=ppx_yo_dt_b_invoice_o00?ie=UTF8&orderID={}"
@@ -50,38 +45,6 @@ class Amazon(object):
         page = self.session.get("https://www.amazon.com/gp/css/order-history")
         soup = BeautifulSoup(page.text, 'html5lib')
         return [i.getText() for i in soup.find_all("bdi")]
-
-    def deprecatedSignIn(self, driver, userEmail, userPassword, otpSecret):
-        totp = pyotp.TOTP(otpSecret)
-
-        driver.get("https://amazon.com")
-        accountNav = driver.find_element_by_id("nav-link-accountList")
-        accountNav.click()
-        
-        time.sleep(1)
-
-        emailEntry = driver.find_element_by_id("ap_email")
-        emailEntry.clear()
-        emailEntry.send_keys(userEmail)
-        driver.find_element_by_id("continue").click()
-
-        time.sleep(1)
-
-        passwordEntry =driver.find_element_by_id("ap_password")
-        passwordEntry.clear()
-        passwordEntry.send_keys(userPassword)
-        driver.find_element_by_name("rememberMe").click()
-        driver.find_element_by_id("signInSubmit").click()
-
-        time.sleep(1)
-
-        otpEntry = driver.find_element_by_id("auth-mfa-otpcode")
-        otpEntry.clear()
-        otpEntry.send_keys(totp.now())
-        driver.find_element_by_id("auth-mfa-remember-device").click()
-        driver.find_element_by_id("auth-signin-button").click()
-
-        time.sleep(1)
 
     def getInvoicePage(self, orderID):
         myOrderPage = self.ORDERS_PAGE.format(orderID)
