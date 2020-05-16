@@ -29,12 +29,10 @@ ynabToken = myConfig["ynabToken"]
 def main():
     amazon = Amazon()
     orderIDs = amazon.getAllOrderIDs()
-    print(orderIDs)
     amazonT = []
     for orderID in orderIDs:
         try:
             iPage = amazon.getInvoicePage(orderID)
-            print(iPage)
             afterTaxItems, transactions = parser.parseInvoicePage(iPage)
             if afterTaxItems == None or transactions == None:
                 continue

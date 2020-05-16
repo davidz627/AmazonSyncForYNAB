@@ -23,7 +23,6 @@ def testParseInvoicePage():
         },
     }
     for testName, tc in tests.items():
-        print(f"Running test {testName}")
         with open(tc["filename"], "r") as f:
             page = f.read()
             afterTaxItems, transactions = parseInvoicePage(page)

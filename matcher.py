@@ -36,7 +36,6 @@ def getItemsCombination(afterTaxItems):
     return: [{"id": transactionID}, "memo": purchasedItems]
 '''
 def matchAmazonToYNAB(amazonTransactions, ynabTransactions):
-  print(f"amazon: {amazonTransactions}\n\n ynab: {ynabTransactions}")
   patch = []
   for yt in ynabTransactions:
       amtInCents = -yt["amount"]

@@ -47,15 +47,9 @@ class Amazon(object):
         return allCookies
 
     def getAllOrderIDs(self):
-        #page = self.session.get("https://www.amazon.com/gp/css/order-history")
-        with open("html.txt", "r") as f:
-            page = f.read()
-            #TODO: The actual page is fucked. For some reason bs can't parse it, we might as well just grep on bdi lol
-            soup = BeautifulSoup(page, 'html.parser')
-            print(soup.getText())
-        #with open("html.txt", "w+") as f:
-        #    f.write(str(page.text))
-            return [i.getText() for i in soup.find_all("bdi")]
+        page = self.session.get("https://www.amazon.com/gp/css/order-history")
+        soup = BeautifulSoup(page.text, 'html5lib')
+        return [i.getText() for i in soup.find_all("bdi")]
 
     def deprecatedSignIn(self, driver, userEmail, userPassword, otpSecret):
         totp = pyotp.TOTP(otpSecret)
