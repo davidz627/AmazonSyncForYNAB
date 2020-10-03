@@ -25,7 +25,7 @@ ynabToken = myConfig["ynabToken"]
 
 def main():
     options = Options()
-    # options.add_argument('--headless')
+    options.add_argument('--headless')
     myDriver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
     amazon_nav.signIn(myDriver, userEmail, userPassword, otpSecret)
     orderIDs = amazon_nav.getAllOrderIDs(myDriver)
