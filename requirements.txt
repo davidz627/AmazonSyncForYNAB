@@ -1,0 +1,5 @@
+bs4
+html5lib
+requests
+selenium
+webdriver-manager

@@ -13,9 +13,9 @@ def signIn(driver, userEmail, userPassword, otpSecret):
     totp = pyotp.TOTP(otpSecret)
 
     driver.get("https://amazon.com")
-    accountNav = driver.find_element_by_id("nav-link-accountList")
+    accountNav = driver.find_element_by_xpath("//a[@data-nav-role='signin']")
     accountNav.click()
-    
+    # data-nav-role="signin"
     time.sleep(1)
 
     emailEntry = driver.find_element_by_id("ap_email")

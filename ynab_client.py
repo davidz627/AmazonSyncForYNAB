@@ -23,7 +23,7 @@ class YNAB(object):
         return resp["data"]["budgets"][0]["id"]
 
     def list_recent_amazon_transactions(self):
-        todayDate = date.today() - timedelta(days=3)
+        todayDate = date.today() - timedelta(days=30)
         priorDateStr = todayDate.strftime("%Y-%m-%d")
         url = self.BASE_URL + f"/budgets/{self.budgetID}/transactions?since_date={priorDateStr}"
         headers = {
@@ -36,9 +36,7 @@ class YNAB(object):
             return None
         transactions = resp["data"]["transactions"]
         amazon = re.compile(r"[[aA]mazon|AMZN]")
-        memo = re.compile(r"[Amazon|AMZN].*\*[\d|A-Z]+")
-        memoFilter = filter(lambda item: item["memo"] == None or memo.match(item["memo"]), transactions)
-        onlyAmazon = filter(lambda item: amazon.match(item["payee_name"]),memoFilter)
+        onlyAmazon = filter(lambda item: amazon.match(item["payee_name"]),transactions)
         onlyAmazon = list(onlyAmazon)
         for i in range(len(onlyAmazon)):
             onlyAmazon[i]["amount"] = onlyAmazon[i]["amount"]//10
