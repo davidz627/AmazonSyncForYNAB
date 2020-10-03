@@ -3,19 +3,30 @@ from bs4 import BeautifulSoup
 import time
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from amazon_client.amazon_client import AmazonClient
+import platform
 
 ORDERS_PAGE = "https://www.amazon.com/gp/css/summary/print.html/ref=ppx_yo_dt_b_invoice_o00?ie=UTF8&orderID={}"
 
 class AmazonSeleniumClient(AmazonClient):
-    def __init__(self, userEmail, userPassword, otpSecret):
+    def __init__(self, userEmail, userPassword, otpSecret, forceFirefoxDriver):
         self.userEmail = userEmail
         self.userPassword = userPassword
         self.otpSecret = otpSecret
-        options = Options()
-        options.add_argument('--headless')
-        self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+        platformMachine = platform.machine()
+        if platformMachine == "armv7l":
+            # TODO: Raspberry Pi: Support this somehow. Webdriver installation needs to be bespoke
+            err = "Platform {} not yet supported".format(platformMachine)
+            print(err)
+            exit(0)
+        else:
+            print(f"Attempting to initialize Chrome Selenium Webdriver on platform {platformMachine}...")
+            options = ChromeOptions()
+            options.add_argument('--headless')
+            self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+            print("Successfully initialize Chrome Selenium Webdriver")
+
         self.signIn()
 
     def getAllOrderIDs(self, pages=1):
