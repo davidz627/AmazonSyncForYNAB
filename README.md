@@ -35,10 +35,3 @@ otpSecret is only required if your Amazon account is protected by OTP. To get th
 ## Contributing
 
 Contributions are welcome. Please create a pull request with an adequate description of your change.
-
-
-## License
-
-GNU GPLv3
-
-I kind of just picked this as a safe option. Let me know if you have a recommendation to change the license with a succinct reasoning.
