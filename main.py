@@ -7,7 +7,7 @@ import configparser
 import parser
 import matcher
 from ynab_client import YNAB
-from amazon_selenium_client import AmazonSeleniumClient
+from amazon_client.amazon_selenium_client import AmazonSeleniumClient
 # from amazon_client import Amazon
 
 # Use encrypted secrets config
