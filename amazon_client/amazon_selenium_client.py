@@ -4,7 +4,7 @@ import time
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
-from amazon_client import AmazonClient
+from amazon_client.amazon_client import AmazonClient
 
 ORDERS_PAGE = "https://www.amazon.com/gp/css/summary/print.html/ref=ppx_yo_dt_b_invoice_o00?ie=UTF8&orderID={}"
 
@@ -18,18 +18,23 @@ class AmazonSeleniumClient(AmazonClient):
         self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
         self.signIn()
 
-    def getAllOrderIDs(self):
-        self.driver.get("https://www.amazon.com/gp/css/order-history")
-        soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-        return [i.getText() for i in soup.find_all("bdi")]
+    def getAllOrderIDs(self, pages=1):
+        orderPage = "https://www.amazon.com/gp/your-account/order-history/ref=ppx_yo_dt_b_pagination_1_2?ie=UTF8&orderFilter=months-6&search=&startIndex={}"
+        orderIDs = []
+        for pageNumber in range(pages):
+            self.driver.get(orderPage.format(pageNumber * 10))
+            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+            orderIDs.extend([i.getText() for i in soup.find_all("bdi")])
+        return orderIDs
 
     def signIn(self):
+        # TODO: Wait for page load instead of sleeping so much
         totp = pyotp.TOTP(self.otpSecret)
 
         self.driver.get("https://amazon.com")
+        time.sleep(1)
         accountNav = self.driver.find_element_by_xpath("//a[@data-nav-role='signin']")
         accountNav.click()
-        # data-nav-role="signin"
         time.sleep(1)
 
         emailEntry = self.driver.find_element_by_id("ap_email")

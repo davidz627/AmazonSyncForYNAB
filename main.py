@@ -6,12 +6,11 @@ import configparser
 # My packages
 import parser
 import matcher
-from ynab_client import YNAB
+from ynab_client import YNABClient
 from amazon_client.amazon_selenium_client import AmazonSeleniumClient
-# from amazon_client import Amazon
+from datetime import date, timedelta
 
-# Use encrypted secrets config
-
+# TODO: Use encrypted secrets config
 config = configparser.ConfigParser()
 config.read("secrets/credentials.ini")
 myConfig = config['DEFAULT']
@@ -21,7 +20,7 @@ userPassword = myConfig["userPassword"]
 ynabToken = myConfig["ynabToken"]
 
 def main(amazonClient):
-    orderIDs = amazonClient.getAllOrderIDs()
+    orderIDs = amazonClient.getAllOrderIDs(3)
     amazonT = []
     for orderID in orderIDs:
         try:
@@ -31,11 +30,10 @@ def main(amazonClient):
                 continue
             matched = matcher.matchAmazonTransactions(afterTaxItems, transactions)
             amazonT.append(matched)
-            print(afterTaxItems, transactions, matched)
         except Exception as e:
             print(f"Something went wrong processing order {orderID}: {e}")
-    myYNAB = YNAB(ynabToken)
-    ynabT = myYNAB.list_recent_amazon_transactions()
+    myYNAB = YNABClient(ynabToken)
+    ynabT = myYNAB.list_recent_amazon_transactions(date.today() - timedelta(days=180))
     transactions = matcher.matchAmazonToYNAB(amazonT, ynabT)
     myYNAB.patch_transactions(transactions)
 

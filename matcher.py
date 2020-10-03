@@ -36,8 +36,6 @@ def getItemsCombination(afterTaxItems):
     return: [{"id": transactionID}, "memo": purchasedItems]
 '''
 def matchAmazonToYNAB(amazonTransactions, ynabTransactions):
-  print (f"amazonTransactions {amazonTransactions}")
-  print (f"ynabTransactions {ynabTransactions}")
   patch = []
   for yt in ynabTransactions:
       amtInCents = -yt["amount"]
@@ -46,7 +44,7 @@ def matchAmazonToYNAB(amazonTransactions, ynabTransactions):
         if amtInCents in at:
             # We have a match!
             # Truncate Items.
-            truncatedTransactions = list(map(lambda x: " ".join(x.split()[:3]), at[amtInCents]))
+            truncatedTransactions = list(map(lambda x: " ".join(x.split()[:6]), at[amtInCents]))
             # Only append to patch if memo != existing memo
             memo = "|".join(truncatedTransactions)
             if yt["memo"] == memo:
@@ -56,5 +54,4 @@ def matchAmazonToYNAB(amazonTransactions, ynabTransactions):
             matched = True
       if not matched:
           print (f"Transaction of amt {amtInCents} not matched to any amazon order")
-  print(f"patch: {patch}")
   return patch

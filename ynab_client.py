@@ -1,9 +1,8 @@
 import requests
 import json
 import re
-from datetime import date, timedelta
 
-class YNAB(object):
+class YNABClient(object):
     BASE_URL = "https://api.youneedabudget.com/v1"
 
     def __init__(self, token):
@@ -22,9 +21,8 @@ class YNAB(object):
         resp = json.loads(rawResponse.content.decode('utf-8'))
         return resp["data"]["budgets"][0]["id"]
 
-    def list_recent_amazon_transactions(self):
-        todayDate = date.today() - timedelta(days=30)
-        priorDateStr = todayDate.strftime("%Y-%m-%d")
+    def list_recent_amazon_transactions(self, sinceDate):
+        priorDateStr = sinceDate.strftime("%Y-%m-%d")
         url = self.BASE_URL + f"/budgets/{self.budgetID}/transactions?since_date={priorDateStr}"
         headers = {
             "Authorization": f"Bearer {self.token}",
@@ -57,7 +55,6 @@ class YNAB(object):
         }
         data = json.dumps({"transactions": transactions})
         resp = requests.patch(url, data, headers=headers)
-        print(f"about to patch data: {data}")
         if resp.status_code != 200:
             print (f"Something went wrong, got response: {resp.content}")
         else:

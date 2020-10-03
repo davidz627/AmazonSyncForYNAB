@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class AmazonClient(ABC):
     @abstractmethod
-    def getAllOrderIDs(self):
+    def getAllOrderIDs(self, pages):
         raise NotImplementedError
     
     @abstractmethod
