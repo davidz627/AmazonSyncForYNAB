@@ -20,14 +20,12 @@ userEmail = myConfig["userEmail"]
 userPassword = myConfig["userPassword"]
 ynabToken = myConfig["ynabToken"]
 
-def main():
-    amazonSeleniumClient = AmazonSeleniumClient()
-    amazonSeleniumClient.signIn(userEmail, userPassword, otpSecret)
-    orderIDs = amazonSeleniumClient.getAllOrderIDs()
+def main(amazonClient):
+    orderIDs = amazonClient.getAllOrderIDs()
     amazonT = []
     for orderID in orderIDs:
         try:
-            iPage = amazonSeleniumClient.getInvoicePage(orderID)
+            iPage = amazonClient.getInvoicePage(orderID)
             afterTaxItems, transactions = parser.parseInvoicePage(iPage)
             if afterTaxItems == None or transactions == None:
                 continue
@@ -43,4 +41,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    amazonSeleniumClient = AmazonSeleniumClient(userEmail, userPassword, otpSecret)
+    main(amazonSeleniumClient)

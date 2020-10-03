@@ -1,7 +1,8 @@
 from bs4 import BeautifulSoup
 import requests
+from amazon_client import AmazonClient
 
-class AmazonCookieClient(object):        
+class AmazonCookieClient(AmazonClient):        
     ORDERS_PAGE = "https://www.amazon.com/gp/css/summary/print.html/ref=ppx_yo_dt_b_invoice_o00?ie=UTF8&orderID={}"
 
     def __init__(self):
