@@ -53,5 +53,5 @@ def matchAmazonToYNAB(amazonTransactions, ynabTransactions):
                 patch.append({"id": yt["id"], "memo": memo})
             matched = True
       if not matched:
-          print (f"Transaction of amt {amtInCents} not matched to any amazon order")
+          print (f"YNAB transaction of amt {amtInCents} not matched to any known amazon order")
   return patch
