@@ -39,5 +39,5 @@ def main(amazonClient):
 
 
 if __name__ == "__main__":
-    amazonSeleniumClient = AmazonSeleniumClient(userEmail, userPassword, otpSecret, False)
+    amazonSeleniumClient = AmazonSeleniumClient(userEmail, userPassword, otpSecret)
     main(amazonSeleniumClient)

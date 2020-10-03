@@ -10,7 +10,7 @@ import platform
 ORDERS_PAGE = "https://www.amazon.com/gp/css/summary/print.html/ref=ppx_yo_dt_b_invoice_o00?ie=UTF8&orderID={}"
 
 class AmazonSeleniumClient(AmazonClient):
-    def __init__(self, userEmail, userPassword, otpSecret, forceFirefoxDriver):
+    def __init__(self, userEmail, userPassword, otpSecret):
         self.userEmail = userEmail
         self.userPassword = userPassword
         self.otpSecret = otpSecret
