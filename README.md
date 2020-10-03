@@ -18,13 +18,13 @@ You will need to add your personal credentials in a file relative to the project
 `{root}/secrets/credentials.ini`
 
 The file should have the format:
-`
+```
 [DEFAULT]
 otpSecret={otpSecret}
 userEmail=foo@bar.com
 userPassword=mySecurePasswordInPlaintextLol
 ynabToken=mySecureTokenInPlaintextHaha
-`
+```
 
 otpSecret is only required if your Amazon account is protected by OTP. To get this secret you can go to the OTP setup page and set up TFA, scan the QR code with a generic QR Code Reader - the returned data string contains your OTP secret.
 
