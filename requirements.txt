@@ -3,3 +3,4 @@ html5lib
 requests
 selenium
 webdriver-manager
+pyotp
