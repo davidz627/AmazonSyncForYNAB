@@ -25,7 +25,7 @@ class AmazonSeleniumClient(AmazonClient):
             options = ChromeOptions()
             options.add_argument('--headless')
             self.driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
-            print("Successfully initialize Chrome Selenium Webdriver")
+            print("Successfully initialized Chrome Selenium Webdriver")
 
         self.signIn()
 
@@ -44,7 +44,7 @@ class AmazonSeleniumClient(AmazonClient):
 
         self.driver.get("https://amazon.com")
         time.sleep(1)
-        accountNav = self.driver.find_element_by_xpath("//a[@data-nav-role='signin']")
+        accountNav = self.driver.find_element_by_xpath("//a[@data-nav-role ='signin']")
         accountNav.click()
         time.sleep(1)
 
@@ -60,6 +60,14 @@ class AmazonSeleniumClient(AmazonClient):
         passwordEntry.send_keys(self.userPassword)
         self.driver.find_element_by_name("rememberMe").click()
         self.driver.find_element_by_id("signInSubmit").click()
+
+        time.sleep(1)
+
+        totpSelect = self.driver.find_element_by_xpath("//input[contains(@value,'TOTP')]")
+        totpSelect.click()
+
+        sendCode = self.driver.find_element_by_xpath("//input[@id = 'auth-send-code']")
+        sendCode.click()
 
         time.sleep(1)
 

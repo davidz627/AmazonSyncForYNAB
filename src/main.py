@@ -33,7 +33,7 @@ def main(amazonClient):
         except Exception as e:
             print(f"Something went wrong processing order {orderID}: {e}")
     myYNAB = YNABClient(ynabToken)
-    ynabT = myYNAB.list_recent_amazon_transactions(date.today() - timedelta(days=180))
+    ynabT = myYNAB.list_recent_amazon_transactions(date.today() - timedelta(days=30))
     transactions = matcher.matchAmazonToYNAB(amazonT, ynabT)
     myYNAB.patch_transactions(transactions)
 
