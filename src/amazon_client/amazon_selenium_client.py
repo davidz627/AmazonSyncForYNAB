@@ -38,7 +38,7 @@ class AmazonSeleniumClient(AmazonClient):
             orderIDs.extend([i.getText() for i in soup.find_all("bdi")])
         return orderIDs
 
-    def signIn(self):
+    def doSignIn(self):
         # TODO: Wait for page load instead of sleeping so much
         totp = pyotp.TOTP(self.otpSecret)
 
@@ -76,8 +76,24 @@ class AmazonSeleniumClient(AmazonClient):
         otpEntry.send_keys(totp.now())
         self.driver.find_element_by_id("auth-mfa-remember-device").click()
         self.driver.find_element_by_id("auth-signin-button").click()
-
         time.sleep(1)
+
+    def signIn(self):
+        try:
+            self.doSignIn()
+        except:
+            print("Amazon sign-in failed. Dumping page source to pagedump.txt")
+            with open('pagedump.txt','w') as f:
+                f.write(self.driver.page_source)
+            self.interpretDriverErrorPage()
+            exit(1)
+
+    def interpretDriverErrorPage(self):
+        try:
+            failElem = self.driver.find_element_by_xpath("//*[contains(text(),'not a robot')]")
+            print("Blocked by Amazon anti-robot. Circumnavigating this is unsupported. Please try again later.")
+        except:
+            pass
 
     def getInvoicePage(self, orderID):
         myOrderPage = ORDERS_PAGE.format(orderID)
