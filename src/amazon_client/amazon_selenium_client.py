@@ -11,6 +11,7 @@ from amazon_client.amazon_client import AmazonClient
 import platform
 
 ORDERS_PAGE = "https://www.amazon.com/gp/css/summary/print.html/ref=ppx_yo_dt_b_invoice_o00?ie=UTF8&orderID={}"
+DIGITAL_ORDERS_PAGE = "https://www.amazon.com/gp/digital/your-account/order-summary.html?ie=UTF8&orderID={}&print=1&ref_=ppx_yo_dt_b_dpi_o00"
 
 class AmazonSeleniumClient(AmazonClient):
     def __init__(self, userEmail, userPassword, otpSecret):
@@ -34,9 +35,14 @@ class AmazonSeleniumClient(AmazonClient):
 
     def getAllOrderIDs(self, pages=1):
         orderPage = "https://www.amazon.com/gp/your-account/order-history/ref=ppx_yo_dt_b_pagination_1_2?ie=UTF8&orderFilter=months-6&search=&startIndex={}"
+        digitalOrderPage = "https://www.amazon.com/gp/your-account/order-history/ref=ppx_yo_dt_b_pagination_1_2?ie=UTF8&orderFilter=months-6&search=&startIndex={}&unifiedOrders=0"
         orderIDs = []
         for pageNumber in range(pages):
             self.driver.get(orderPage.format(pageNumber * 10))
+            soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+            orderIDs.extend([i.getText() for i in soup.find_all("bdi")])
+
+            self.driver.get(digitalOrderPage.format(pageNumber * 10))
             soup = BeautifulSoup(self.driver.page_source, 'html.parser')
             orderIDs.extend([i.getText() for i in soup.find_all("bdi")])
         return orderIDs
@@ -102,6 +108,9 @@ class AmazonSeleniumClient(AmazonClient):
             pass
 
     def getInvoicePage(self, orderID):
-        myOrderPage = ORDERS_PAGE.format(orderID)
+        if(orderID[0] == 'D'):
+            myOrderPage = DIGITAL_ORDERS_PAGE.format(orderID)
+        else:
+            myOrderPage = ORDERS_PAGE.format(orderID)
         self.driver.get(myOrderPage)
         return self.driver.page_source
