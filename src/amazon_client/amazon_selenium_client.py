@@ -12,6 +12,7 @@ import platform
 
 ORDERS_PAGE = "https://www.amazon.com/gp/css/summary/print.html/ref=ppx_yo_dt_b_invoice_o00?ie=UTF8&orderID={}"
 DIGITAL_ORDERS_PAGE = "https://www.amazon.com/gp/digital/your-account/order-summary.html?ie=UTF8&orderID={}&print=1&ref_=ppx_yo_dt_b_dpi_o00"
+TRANSACTIONS_PAGE = "https://www.amazon.com/cpe/yourpayments/transactions"
 
 class AmazonSeleniumClient(AmazonClient):
     def __init__(self, userEmail, userPassword, otpSecret):
@@ -27,7 +28,7 @@ class AmazonSeleniumClient(AmazonClient):
         else:
             print(f"Attempting to initialize Chrome Selenium Webdriver on platform {platformMachine}...")
             options = ChromeOptions()
-            options.add_argument('--headless')
+            # options.add_argument('--headless')
             self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
             print("Successfully initialized Chrome Selenium Webdriver")
 
@@ -114,3 +115,18 @@ class AmazonSeleniumClient(AmazonClient):
             myOrderPage = ORDERS_PAGE.format(orderID)
         self.driver.get(myOrderPage)
         return self.driver.page_source
+
+    def getTransactionsPage(self, pages=3):
+        page_sources = []
+
+        self.driver.get(TRANSACTIONS_PAGE)
+        for i in range(pages):
+            page_sources.append(self.driver.page_source)
+            try:
+                nextPageButton = self.driver.find_element(By.XPATH, '// *[ @ id = "a-autoid-1"] / span / input')
+            except NoSuchElementException:
+                nextPageButton = self.driver.find_element(By.XPATH, '// *[ @ id = "cpefront-mpo-widget"] / div / form / div[2] / div[2] / span / span / input')
+            nextPageButton.click()
+            time.sleep(2)
+
+        return page_sources
