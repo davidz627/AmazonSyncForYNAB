@@ -91,6 +91,14 @@ class AmazonSeleniumClient(AmazonClient):
         self.driver.find_element(By.ID, "auth-signin-button").click()
         time.sleep(1)
 
+        try:
+            phoneSkipButton = self.driver.find_element(By.XPATH, '//*[@id="ap-account-fixup-phone-skip-link"]')
+            phoneSkipButton.click()
+            time.sleep(1)
+        except NoSuchElementException:
+            pass
+
+
     def signIn(self):
         try:
             self.doSignIn()
