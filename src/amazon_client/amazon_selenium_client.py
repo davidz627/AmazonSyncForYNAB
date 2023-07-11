@@ -28,7 +28,7 @@ class AmazonSeleniumClient(AmazonClient):
         else:
             print(f"Attempting to initialize Chrome Selenium Webdriver on platform {platformMachine}...")
             options = ChromeOptions()
-            # options.add_argument('--headless')
+            options.add_argument('--headless')
             self.driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=options)
             print("Successfully initialized Chrome Selenium Webdriver")
 
