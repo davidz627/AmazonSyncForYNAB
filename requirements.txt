@@ -1,6 +1,6 @@
 bs4
 html5lib
 requests
-selenium
+selenium ~= 4.10.0
 webdriver-manager
 pyotp
