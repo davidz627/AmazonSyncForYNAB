@@ -1,4 +1,6 @@
-This project is not actively worked on as I re-wrote it and launched as ["Ace My Budget"](https://acemybudget.com)
+This project is not actively worked on as I re-wrote it in JS and launched as ["Ace My Budget"](https://acemybudget.com)
+
+
 
 # Amazon For YNAB
 
